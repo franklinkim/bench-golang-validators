@@ -1,8 +1,13 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+
 	"github.com/asaskevich/govalidator"
+	"github.com/foomo/fender"
+	"github.com/foomo/fender/fend"
+	"github.com/foomo/fender/rule"
 	"github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 	"github.com/go-playground/validator/v10"
@@ -78,6 +83,23 @@ func validateWithSaddam(user *User) {
 	if len(e) > 0 {
 		data, _ := json.Marshal(e)
 		println("Saddam: " + string(data))
+	}
+}
+
+func validateWithFender(user *User) {
+	errors := fender.All(
+		context.Background(),
+		fend.Field("firstname", user.FirstName, rule.RequiredString),
+		fend.Field("lastname", user.LastName, rule.RequiredString),
+		fend.Field("age", user.Age, rule.MinInt(0), rule.MaxInt(130)),
+		fend.Field("email", user.Email, rule.EmailWeak),
+		fend.Field("street", user.Street, rule.RequiredString),
+		fend.Field("city", user.City, rule.RequiredString),
+		fend.Field("planet", user.Planet, rule.RequiredString),
+		fend.Field("phone", user.Phone, rule.RequiredString),
+	)
+	if errors != nil {
+		println(errors.Error())
 	}
 }
 

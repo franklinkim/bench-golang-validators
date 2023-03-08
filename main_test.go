@@ -1,9 +1,10 @@
 package main
 
 import (
+	"testing"
+
 	"github.com/go-playground/validator/v10"
 	saddam "github.com/thedevsaddam/govalidator"
-	"testing"
 )
 
 func BenchmarkAsaskevich(b *testing.B) {
@@ -67,6 +68,17 @@ func BenchmarkBuffalo(b *testing.B) {
 
 	for n := 0; n < b.N; n++ {
 		validateWithBuffalo(user)
+	}
+}
+
+func BenchmarkFender(b *testing.B) {
+	user := newUser()
+
+	b.ReportAllocs()
+	b.ResetTimer()
+
+	for n := 0; n < b.N; n++ {
+		validateWithFender(user)
 	}
 }
 
